@@ -8,6 +8,9 @@ Training Set and Citations
 Building the Training Set
 ==========================
 
+Old English
+-----------
+
 To download the ISWOC corpus and construct a tagged corpus for training the POS tagger, issue:
 
 ```bash

@@ -1,16 +1,16 @@
-"""Train cltk POS models from a training set and save them in the model repository."""
+"""Development file to test different NLTK taggers using cross-volidation."""
 
 from nltk.corpus.reader import TaggedCorpusReader
 from nltk.tag import UnigramTagger
 from nltk.tag import BigramTagger
 from nltk.tag import CRFTagger
 from nltk.tag import TrigramTagger
+from nltk.tag import PerceptronTagger
 
 import os
 import pickle
 import time
 import sys
-from random import shuffle
 
 def train_tagger(model_type, train_sents):
     if model_type == 'unigram':
@@ -26,11 +26,14 @@ def train_tagger(model_type, train_sents):
     elif model_type == 'crf':
         tagger = CRFTagger()
         tagger.train(train_sents, 'taggers/pos/crf.pickle')
+    elif model_type == 'perceptron':
+        tagger = PerceptronTagger()
+        tagger.train(train_sents)
 
     return tagger
 
 
-def make_pos_model(train_file, test_file, model_type):
+def make_pos_model(train_file, test_file, model_type, cv=0):
     reader_train = TaggedCorpusReader('.', train_file)
     reader_test  = TaggedCorpusReader('.', test_file)
     train_sents = reader_train.tagged_sents()
@@ -38,7 +41,19 @@ def make_pos_model(train_file, test_file, model_type):
 
     tagger = train_tagger(model_type, train_sents)
 
-    print('Test Accuracy:', tagger.evaluate(test_sents))
+    return tagger.evaluate(test_sents)
 
 if __name__ == "__main__":
-    make_pos_model(sys.argv[1], sys.argv[2], sys.argv[3])
+    model_type = sys.argv[1]
+
+    tot_acc = 0.0
+    for cv in range(0, 10):
+        os.system('scripts/split_dataset.bash corpora/oe.pos')
+        now = time.time()
+        acc = make_pos_model('tmp/oe_train.pos', 'tmp/oe_test.pos', model_type)
+        print("CV fold {0} accuracy = {1:.3} in {2:.3f} seconds".format(cv + 1, acc, time.time() - now))
+        tot_acc += acc
+
+
+    print("10-fold validation of model {0} = {1:.3f}".format(model_type, tot_acc/10))
+    os.system('rm -rf ./tmp')

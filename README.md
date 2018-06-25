@@ -11,14 +11,13 @@ Building the Training Set
 Old English
 -----------
 
-To download the ISWOC corpus and construct a tagged corpus for training the POS tagger, issue:
+To download the ISWOC corpus and construct a tagged corpus for training the POS tagger, issue from the `english_models_cltk` directory:
 
 ```bash
 ./scripts/make_oe_corpus.bash
 ```
-from the `english_models_cltk` directory.
 
-This will yield a file `oe.conll` in the `corpora` directory.  
+This will yield a file `oe.conll` in the `corpora` subdirectory.  
 To build the training file for the tagger, issue:
 
 ```bash

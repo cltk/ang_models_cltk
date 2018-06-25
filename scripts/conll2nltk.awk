@@ -1,7 +1,7 @@
 #!/usr/bin/awk  -f
 
 /^$/ { 
-	print "\n"
+	print
 	next
 }
 

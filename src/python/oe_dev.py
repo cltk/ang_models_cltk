@@ -27,7 +27,7 @@ def train_tagger(model_type, train_sents):
         tagger = CRFTagger()
         tagger.train(train_sents, 'taggers/pos/crf.pickle')
     elif model_type == 'perceptron':
-        tagger = PerceptronTagger()
+        tagger = PerceptronTagger(load=False)
         tagger.train(train_sents)
 
     return tagger

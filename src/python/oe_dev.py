@@ -33,7 +33,7 @@ def train_tagger(model_type, train_sents):
     return tagger
 
 
-def make_pos_model(train_file, test_file, model_type, cv=0):
+def make_pos_model(train_file, test_file, model_type):
     reader_train = TaggedCorpusReader('.', train_file)
     reader_test  = TaggedCorpusReader('.', test_file)
     train_sents = reader_train.tagged_sents()
@@ -57,3 +57,6 @@ if __name__ == "__main__":
 
     print("10-fold validation of model {0} = {1:.3f}".format(model_type, tot_acc/10))
     os.system('rm -rf ./tmp')
+
+    test_acc = make_pos_model('corpora/oe_train.pos', 'corpora/oe_test.pos', model_type)
+    print("Test accuracy on unseen text of model {0} = {1:.3f}".format(model_type, test_acc))

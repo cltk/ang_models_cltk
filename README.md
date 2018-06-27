@@ -50,7 +50,7 @@ CV fold 9 accuracy = 0.811 in 0.184 seconds
 CV fold 10 accuracy = 0.813 in 0.187 seconds
 10-fold validation of model unigram = 0.820
 Test accuracy of model unigram on unseen text  = 0.685
-Time for modhel unigram to tag Beowulf = 0.020
+Time for model unigram to tag Beowulf = 0.020
 
 ---------- backoff ----------
 CV fold 1 accuracy = 0.828 in 0.530 seconds
@@ -65,7 +65,7 @@ CV fold 9 accuracy = 0.827 in 0.574 seconds
 CV fold 10 accuracy = 0.828 in 0.539 seconds
 10-fold validation of model backoff = 0.831
 Test accuracy of model backoff on unseen text  = 0.700
-Time for modhel backoff to tag Beowulf = 0.056
+Time for model backoff to tag Beowulf = 0.056
 
 ---------- crf ----------
 CV fold 1 accuracy = 0.899 in 2.886 seconds
@@ -80,7 +80,7 @@ CV fold 9 accuracy = 0.901 in 3.041 seconds
 CV fold 10 accuracy = 0.912 in 2.922 seconds
 10-fold validation of model crf = 0.900
 Test accuracy of model crf on unseen text  = 0.827
-Time for modhel crf to tag Beowulf = 0.173
+Time for model crf to tag Beowulf = 0.173
 
 ---------- perceptron ----------
 CV fold 1 accuracy = 0.924 in 5.726 seconds
@@ -95,7 +95,7 @@ CV fold 9 accuracy = 0.92 in 6.065 seconds
 CV fold 10 accuracy = 0.922 in 6.352 seconds
 10-fold validation of model perceptron = 0.922
 Test accuracy of model perceptron on unseen text  = 0.840
-Time for modhel perceptron to tag Beowulf = 0.990
+Time for model perceptron to tag Beowulf = 0.990
 ```
 
 We see that the Perceptron tagger is the most accurate but also slowest.  The CRF tagger seems to offer the best balance of speed and accuracy.

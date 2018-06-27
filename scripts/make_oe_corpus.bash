@@ -13,7 +13,7 @@ rm -rf .git
 
 # concatenate the OE files
 cat æls.conll apt.conll chrona.conll or.conll wscp.conll > oe.conll
-NUM_TOKENS=`wc -l oe.conll | cut -f1 -d' '`
+NUM_TOKENS=`wc -l	 oe.conll | cut -f1 -d' '`
 echo "Old English corpus has $NUM_TOKENS tokens."
 $SCRIPT_DIR/conll2nltk.awk oe.conll > ../oe.pos
 

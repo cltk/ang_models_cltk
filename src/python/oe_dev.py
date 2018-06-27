@@ -1,5 +1,6 @@
 """Development file to test different NLTK taggers using cross-volidation."""
 
+from nltk import word_tokenize
 from nltk.corpus.reader import TaggedCorpusReader
 from nltk.tag import UnigramTagger
 from nltk.tag import BigramTagger
@@ -41,22 +42,34 @@ def make_pos_model(train_file, test_file, model_type):
 
     tagger = train_tagger(model_type, train_sents)
 
-    return tagger.evaluate(test_sents)
+    return (tagger, tagger.evaluate(test_sents))
 
 if __name__ == "__main__":
     model_type = sys.argv[1]
+    num_folds = int(sys.argv[2])
+
+    os.system('mkdir -p taggers/pos')
 
     tot_acc = 0.0
-    for cv in range(0, 10):
+    for cv in range(0, num_folds):
         os.system('scripts/split_dataset.bash corpora/oe.pos')
         now = time.time()
-        acc = make_pos_model('tmp/oe_train.pos', 'tmp/oe_test.pos', model_type)
+        _, acc = make_pos_model('tmp/oe_train.pos', 'tmp/oe_test.pos', model_type)
         print("CV fold {0} accuracy = {1:.3} in {2:.3f} seconds".format(cv + 1, acc, time.time() - now))
         tot_acc += acc
 
+    if num_folds > 0:
+        print("{2}-fold validation of model {0} = {1:.3f}".format(model_type, tot_acc / num_folds, num_folds))
+        os.system('rm -rf ./tmp')
 
-    print("10-fold validation of model {0} = {1:.3f}".format(model_type, tot_acc/10))
-    os.system('rm -rf ./tmp')
+    # validate on unseen text
+    tagger, test_acc = make_pos_model('corpora/oe_train.pos', 'corpora/oe_test.pos', model_type)
+    print("Test accuracy of model {0} on unseen text  = {1:.3f}".format(model_type, test_acc))
 
-    test_acc = make_pos_model('corpora/oe_train.pos', 'corpora/oe_test.pos', model_type)
-    print("Test accuracy on unseen text of model {0} = {1:.3f}".format(model_type, test_acc))
+    # time tagging of Beowulf by the trained tagger
+    with open('corpora/oe/beowulf.txt') as untagged_text_file:
+        untagged_text = untagged_text_file.read()
+        tokens = word_tokenize(untagged_text)
+        now = time.time()
+        tagger.tag(tokens)
+        print("Time for model {0} to tag Beowulf = {1:.3f}".format(model_type, time.time() - now))

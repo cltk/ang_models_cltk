@@ -19,7 +19,7 @@ if __name__ == "__main__":
     for cv in range(0, num_folds):
         os.system('scripts/split_dataset.bash corpora/oe.pos')
         now = time.time()
-        _, acc = make_pos_model('tmp/oe_train.pos', 'tmp/oe_test.pos', model_type)
+        _, acc = make_pos_model(model_type, 'tmp/oe_train.pos', 'tmp/oe_test.pos')
         print("CV fold {0} accuracy = {1:.3} in {2:.3f} seconds".format(cv + 1, acc, time.time() - now))
         tot_acc += acc
 
@@ -28,7 +28,7 @@ if __name__ == "__main__":
         os.system('rm -rf ./tmp')
 
     # validate on unseen text
-    tagger, test_acc = make_pos_model('corpora/oe_train.pos', 'corpora/oe_test.pos', model_type)
+    tagger, test_acc = make_pos_model(model_type, 'corpora/oe_train.pos', 'corpora/oe_test.pos')
     print("Test accuracy of model {0} on unseen text  = {1:.3f}".format(model_type, test_acc))
 
     # time tagging of Beowulf by the trained tagger
@@ -36,5 +36,6 @@ if __name__ == "__main__":
         untagged_text = untagged_text_file.read()
         tokens = word_tokenize(untagged_text)
         now = time.time()
-        tagger.tag(tokens)
+        tagged_text = tagger.tag(tokens)
+        print(tagged_text)
         print("Time for model {0} to tag Beowulf = {1:.3f}".format(model_type, time.time() - now))

@@ -30,10 +30,9 @@ if __name__ == "__main__":
     print("Test accuracy of model {0} on unseen text  = {1:.3f}".format(model_type, test_acc))
 
     # time tagging of Beowulf by the trained tagger
-    with open('corpora/oe/beowulf.txt') as untagged_text_file:
+    with open('texts/oe/beowulf.txt') as untagged_text_file:
         untagged_text = untagged_text_file.read()
         tokens = word_tokenize(untagged_text)
         now = time.time()
         tagged_text = tagger.tag(tokens)
-        print(tagged_text)
         print("Time for model {0} to tag Beowulf = {1:.3f}".format(model_type, time.time() - now))

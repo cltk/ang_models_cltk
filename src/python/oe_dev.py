@@ -13,8 +13,6 @@ if __name__ == "__main__":
     model_type = sys.argv[1]
     num_folds = int(sys.argv[2])
 
-    os.system('mkdir -p taggers/pos')
-
     tot_acc = 0.0
     for cv in range(0, num_folds):
         os.system('scripts/split_dataset.bash corpora/oe.pos')

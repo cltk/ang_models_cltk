@@ -2,6 +2,9 @@
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd "$SCRIPT_DIR/.."
+# create directory for binary models
+mkdir -p taggers/pos
+# create directory for storing corpora
 mkdir -p corpora
 cd corpora
 
@@ -22,6 +25,8 @@ cat æls.conll apt.conll chrona.conll wscp.conll > oe_train.conll
 cp  or.conll oe_test.conll
 $SCRIPT_DIR/conll2nltk.awk oe_train.conll > ../oe_train.pos
 $SCRIPT_DIR/conll2nltk.awk oe_test.conll  > ../oe_test.pos
+
+
 
 
 

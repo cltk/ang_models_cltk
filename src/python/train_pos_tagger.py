@@ -1,4 +1,4 @@
-"""Functions t o train NLTK POS taggers"""
+"""Functions to train NLTK POS taggers"""
 
 from nltk.corpus.reader import TaggedCorpusReader
 from nltk.tag import UnigramTagger

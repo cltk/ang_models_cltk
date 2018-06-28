@@ -20,6 +20,16 @@ To download the ISWOC corpus and construct a tagged corpus for training the POS 
 This will yield a file `oe.pos` in the `corpora` subdirectory.  
 It will also produce files `oe_train.pos` and `oe_test.pos`.  The latter is just Orosius' history, while the former contains the rest of the texts in the ISWOC corpus.  Validating on an unseen text provides a more realistic estimate of the tagger's accuracy on novel texts.
 
+The POS tag scheme is explained here: https://proiel.github.io/handbook/developer/
+
+Running Unit Tests
+==================
+
+To ensure that the system is sound, from the project directory run:
+
+```bash
+python test/python/test_train_pos_tagger.py 
+```
 
 Evaluating the Tagging Models
 =============================

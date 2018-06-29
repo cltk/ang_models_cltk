@@ -110,8 +110,58 @@ Time for model perceptron to tag Beowulf = 0.990
 
 We see that the Perceptron tagger is the most accurate but also slowest.  The CRF tagger seems to offer the best balance of speed and accuracy.
 
-Saving the Tagger
+Training Taggers
 =================
+
+The python module at `src/python/oe_train.py` is used to train POS taggers.  
+
+For help on using the script, use:
+
+```bash
+python src/python/oe_train.py -h
+
+usage: oe_train.py [-h] [-f TRAINING_FILE] [-u UNTAGGED_TEXT_FILE] [-v]
+                   {unigram,bigram,trigram,backoff,crf,perceptron,all}
+
+Train POS tagger(s) for Old English.
+
+positional arguments:
+  {unigram,bigram,trigram,backoff,crf,perceptron,all}
+                        POS model type to train
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -f TRAINING_FILE, --training_file TRAINING_FILE
+                        training file
+  -u UNTAGGED_TEXT_FILE, --untagged_text_file UNTAGGED_TEXT_FILE
+                        untagged text for testing
+  -v, --verbose
+```
+
+In the simplest case, all supported models are trained and stored in `tagggers/pos`. Unless the `-v` flag is set, the script is silent.
+
+```bash
+python src/python/oe_train.py all
+
+ls -l taggers/pos
+total 6296
+-rwxrwxrwx 1 jds jds  198414 Jun 29 01:11 backoff.pickle
+-rwxrwxrwx 1 jds jds  466397 Jun 29 01:11 bigram.pickle
+-rwxrwxrwx 1 jds jds  552396 Jun 29 01:11 crf.pickle
+-rwxrwxrwx 1 jds jds 4294112 Jun 29 01:12 perceptron.pickle
+-rwxrwxrwx 1 jds jds  764556 Jun 29 01:11 trigram.pickle
+-rwxrwxrwx 1 jds jds  163393 Jun 29 01:11 unigram.pickle
+```
+
+With `-v` set, the output lists the location of the saved tagger and a sample of its output:
+
+```bash
+python src/python/oe_train.py crf -v
+Model crf saved at taggers/pos/crf.pickle.  Training accuracy = 0.925
+Sample tagging output: [('Hwæt', 'I-'), ('!', 'C-'), ('We', 'NE'), ('Gardena', 'NE'), ('in', 'R-'), ('geardagum', 'NB'), (',', 'C-'), ('þeodcyninga', 'NB'), (',', 'C-'), ('þrym', 'PY')]
+```
 
 Loading the Tagger
 ==================
+
+[point to CLTK documentation elsewhere?]

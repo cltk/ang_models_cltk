@@ -5,7 +5,6 @@ from train_pos_tagger import make_pos_model
 from nltk import word_tokenize
 
 import os
-import pickle
 import time
 import sys
 

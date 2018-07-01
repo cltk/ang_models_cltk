@@ -30,13 +30,13 @@ def train_tagger(model_type, train_sents):
 
 
 def make_pos_model(model_type, train_file, test_file = None):
-	test_file = train_file if test_file == None else test_file
+    test_file = train_file if test_file == None else test_file
 
-	reader_train = TaggedCorpusReader('.', train_file)
-	reader_test  = TaggedCorpusReader('.', test_file)
-	train_sents = reader_train.tagged_sents()
-	test_sents = reader_test.tagged_sents()
+    reader_train = TaggedCorpusReader('.', train_file)
+    reader_test  = TaggedCorpusReader('.', test_file)
+    train_sents = reader_train.tagged_sents()
+    test_sents = reader_test.tagged_sents()
 
-	tagger = train_tagger(model_type, train_sents)
+    tagger = train_tagger(model_type, train_sents)
 
-	return (tagger, tagger.evaluate(test_sents))
+    return (tagger, tagger.evaluate(test_sents))

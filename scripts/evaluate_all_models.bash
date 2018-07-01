@@ -1,6 +1,5 @@
 #!/bin/bash
 
-set -e
 
 for model in unigram backoff crf perceptron; do
 	echo "---------- $model ----------"

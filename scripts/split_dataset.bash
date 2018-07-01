@@ -1,5 +1,13 @@
 #!/bin/bash
 
+OS=`uname -s`
+if [ "$OS" = "Darwin" ]
+then
+	SHUF="/usr/local/bin/gshuf"
+else
+	SHUF=`which shuf`
+fi
+
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd "$SCRIPT_DIR/.."
 
@@ -9,10 +17,10 @@ SHUFFLED_FILE=tmp/${DATA_FILE}_shuf.pos
 TRAIN_FILE=tmp/${DATA_FILE}_train.pos
 TEST_FILE=tmp/${DATA_FILE}_test.pos
 
-NUM_SENTS=`wc -l $1 | cut -f1 -d' '`
+NUM_SENTS=`wc -l $1 | awk '{print $1}'`
 let NUM_TEST_SENTS=NUM_SENTS/10
 let TRAIN_START_LINE=NUM_TEST_SENTS+1
 
-shuf $1 > $SHUFFLED_FILE
+$SHUF $1 > $SHUFFLED_FILE
 head -$NUM_TEST_SENTS $SHUFFLED_FILE > $TEST_FILE
 tail -n +$TRAIN_START_LINE $SHUFFLED_FILE > $TRAIN_FILE

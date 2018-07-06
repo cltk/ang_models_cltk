@@ -3,6 +3,7 @@
 OS=`uname -s`
 if [ "$OS" = "Darwin" ]
 then
+	# Note: mac has `gshuf`, obtained with `brew install coreutils`
 	SHUF="/usr/local/bin/gshuf"
 else
 	SHUF=`which shuf`

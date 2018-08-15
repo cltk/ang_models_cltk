@@ -28,9 +28,10 @@ echo "Old English corpus has $NUM_TOKENS tokens."
 # build static train and test sets
 > oe_train.pos
 for xmlfile in æls.xml apt.xml chrona.xml wscp.xml; do
-	cat iswoc-treebank/$xmlfile | python $SCRIPT_DIR/../src/python/xml2nltk.py >> oe_train.pos
+	cat iswoc-treebank/$xmlfile | python $SCRIPT_DIR/../src/python/xml2nltk.py $1 >> oe_train.pos
 done
-cat iswoc-treebank/or.xml | python $SCRIPT_DIR/../src/python/xml2nltk.py >> oe_test.pos
+> oe_test.pos
+cat iswoc-treebank/or.xml | python $SCRIPT_DIR/../src/python/xml2nltk.py $1 >> oe_test.pos
 
 
 

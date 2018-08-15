@@ -13,18 +13,25 @@ rm -rf iswoc-treebank
 git clone -q git@github.com:iswoc/iswoc-treebank.git
 cd iswoc-treebank
 rm -rf .git
+cd ..
 
-# concatenate the OE files
-cat æls.conll apt.conll chrona.conll or.conll wscp.conll > oe.conll
-NUM_TOKENS=`wc -l	 oe.conll | awk '{print $1}'`
+# parse and concatenate OE files
+> oe.pos
+
+for xmlfile in æls.xml apt.xml chrona.xml or.xml wscp.xml; do
+	cat iswoc-treebank/$xmlfile | python $SCRIPT_DIR/../src/python/xml2nltk.py $1 >> oe.pos
+done
+
+NUM_TOKENS=`wc oe.pos | awk '{print $2}'`
 echo "Old English corpus has $NUM_TOKENS tokens."
-$SCRIPT_DIR/conll2nltk.awk oe.conll > ../oe.pos
 
 # build static train and test sets
-cat æls.conll apt.conll chrona.conll wscp.conll > oe_train.conll
-cp  or.conll oe_test.conll
-$SCRIPT_DIR/conll2nltk.awk oe_train.conll > ../oe_train.pos
-$SCRIPT_DIR/conll2nltk.awk oe_test.conll  > ../oe_test.pos
+> oe_train.pos
+for xmlfile in æls.xml apt.xml chrona.xml wscp.xml; do
+	cat iswoc-treebank/$xmlfile | python $SCRIPT_DIR/../src/python/xml2nltk.py >> oe_train.pos
+done
+cat iswoc-treebank/or.xml | python $SCRIPT_DIR/../src/python/xml2nltk.py >> oe_test.pos
+
 
 
 

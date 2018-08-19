@@ -18,7 +18,7 @@ cd ..
 # parse and concatenate OE files
 > oe.pos
 
-for xmlfile in æls.xml apt.xml chrona.xml or.xml wscp.xml; do
+for xmlfile in æls.xml apt.xml chrona.xml wscp.xml or.xml ; do
 	cat iswoc-treebank/$xmlfile | python $SCRIPT_DIR/../src/python/xml2nltk.py $1 >> oe.pos
 done
 

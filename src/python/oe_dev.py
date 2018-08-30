@@ -9,14 +9,15 @@ import time
 import sys
 
 if __name__ == "__main__":
-    model_type = sys.argv[1]
-    num_folds = int(sys.argv[2])
+    tag = sys.argv[1]
+    model_type = sys.argv[2]
+    num_folds = int(sys.argv[3])
 
     tot_acc = 0.0
     for cv in range(0, num_folds):
-        os.system('scripts/split_dataset.bash corpora/oe.pos')
+        os.system('scripts/split_dataset.bash corpora/oe.' + tag)
         now = time.time()
-        _, acc = make_pos_model(model_type, 'tmp/oe_train.pos', 'tmp/oe_test.pos')
+        _, acc = make_pos_model(model_type, 'tmp/oe_train.' + tag, 'tmp/oe_test.' + tag)
         print("CV fold {0} accuracy = {1:.3} in {2:.3f} seconds".format(cv + 1, acc, time.time() - now))
         tot_acc += acc
 
@@ -25,7 +26,7 @@ if __name__ == "__main__":
         os.system('rm -rf ./tmp')
 
     # validate on unseen text
-    tagger, test_acc = make_pos_model(model_type, 'corpora/oe_train.pos', 'corpora/oe_test.pos')
+    tagger, test_acc = make_pos_model(model_type, 'corpora/oe_train.' + tag, 'corpora/oe_test.' + tag)
     print("Test accuracy of model {0} on unseen text  = {1:.3f}".format(model_type, test_acc))
 
     # time tagging of Beowulf by the trained tagger

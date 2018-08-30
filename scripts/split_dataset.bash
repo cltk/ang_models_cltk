@@ -13,10 +13,11 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd "$SCRIPT_DIR/.."
 
 mkdir -p tmp
-DATA_FILE=`basename "$1" .pos`
-SHUFFLED_FILE=tmp/${DATA_FILE}_shuf.pos
-TRAIN_FILE=tmp/${DATA_FILE}_train.pos
-TEST_FILE=tmp/${DATA_FILE}_test.pos
+EXT=${1##*.}
+DATA_FILE=`basename "$1" .$EXT`
+SHUFFLED_FILE=tmp/${DATA_FILE}_shuf.$EXT
+TRAIN_FILE=tmp/${DATA_FILE}_train.$EXT
+TEST_FILE=tmp/${DATA_FILE}_test.$EXT
 
 NUM_SENTS=`wc -l $1 | awk '{print $1}'`
 let NUM_TEST_SENTS=NUM_SENTS/10

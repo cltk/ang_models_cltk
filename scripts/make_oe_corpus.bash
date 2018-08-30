@@ -16,22 +16,24 @@ rm -rf .git
 cd ..
 
 # parse and concatenate OE files
-> oe.pos
+for tag in pos person number tense mood voice gender case degree strength inflection; do
+	> oe.$tag
 
-for xmlfile in æls.xml apt.xml chrona.xml wscp.xml or.xml ; do
-	cat iswoc-treebank/$xmlfile | python $SCRIPT_DIR/../src/python/xml2nltk.py $1 >> oe.pos
+	for xmlfile in æls.xml apt.xml chrona.xml wscp.xml or.xml ; do
+		cat iswoc-treebank/$xmlfile | python $SCRIPT_DIR/../src/python/xml2nltk.py --$tag >> oe.$tag
+	done
+
+	# build static train and test sets
+	> oe_train.$tag
+	for xmlfile in æls.xml apt.xml chrona.xml wscp.xml; do
+		cat iswoc-treebank/$xmlfile | python $SCRIPT_DIR/../src/python/xml2nltk.py --$tag >> oe_train.$tag
+	done
+	> oe_test.$tag
+	cat iswoc-treebank/or.xml | python $SCRIPT_DIR/../src/python/xml2nltk.py --$tag >> oe_test.$tag
 done
 
 NUM_TOKENS=`wc oe.pos | awk '{print $2}'`
 echo "Old English corpus has $NUM_TOKENS tokens."
-
-# build static train and test sets
-> oe_train.pos
-for xmlfile in æls.xml apt.xml chrona.xml wscp.xml; do
-	cat iswoc-treebank/$xmlfile | python $SCRIPT_DIR/../src/python/xml2nltk.py $1 >> oe_train.pos
-done
-> oe_test.pos
-cat iswoc-treebank/or.xml | python $SCRIPT_DIR/../src/python/xml2nltk.py $1 >> oe_test.pos
 
 
 

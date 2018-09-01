@@ -8,6 +8,7 @@ from nltk.tag import TrigramTagger
 from nltk.tag import PerceptronTagger
 
 import numpy as np
+import pandas as pd
 from sklearn.metrics import confusion_matrix
 
 
@@ -40,7 +41,8 @@ def conf_matrix(tagger, words, tagged_words):
     predicted_tags = [tag if tag != None else 'None' for _, tag in tagger.tag(words)]
     gold_tags = [tag for _, tag in tagged_words]
     labels = np.unique(gold_tags)
-    return confusion_matrix(predicted_tags, gold_tags, labels=labels), labels
+    cm = confusion_matrix(gold_tags, predicted_tags, labels=labels)
+    return pd.DataFrame(cm, index = labels, columns = labels)
     
 
 def make_pos_model(model_type, train_file, test_file = None):
@@ -57,6 +59,6 @@ def make_pos_model(model_type, train_file, test_file = None):
     baseline = compute_baseline(reader_test.tagged_words())
     kappa = (acc - baseline) / (1 - baseline)
 
-    cm, tag_list = conf_matrix(tagger, reader_test.words(), reader_test.tagged_words())
+    cm = conf_matrix(tagger, reader_test.words(), reader_test.tagged_words())
 
-    return (tagger, acc, kappa, (cm, tag_list))
+    return (tagger, acc, kappa, cm)

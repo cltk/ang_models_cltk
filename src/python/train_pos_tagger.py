@@ -7,6 +7,9 @@ from nltk.tag import CRFTagger
 from nltk.tag import TrigramTagger
 from nltk.tag import PerceptronTagger
 
+import numpy as np
+from sklearn.metrics import confusion_matrix
+
 
 def train_tagger(model_type, train_sents):
     if model_type == 'unigram':
@@ -28,6 +31,17 @@ def train_tagger(model_type, train_sents):
 
     return tagger
 
+def compute_baseline(tagged_words):
+    tags = [tag for word, tag in tagged_words]
+    unique_tags, counts = np.unique(tags, return_counts=True)
+    return np.max(counts) / len(tagged_words)
+
+def conf_matrix(tagger, words, tagged_words):
+    predicted_tags = [tag if tag != None else 'None' for _, tag in tagger.tag(words)]
+    gold_tags = [tag for _, tag in tagged_words]
+    labels = np.unique(gold_tags)
+    return confusion_matrix(predicted_tags, gold_tags, labels=labels), labels
+    
 
 def make_pos_model(model_type, train_file, test_file = None):
     test_file = train_file if test_file == None else test_file
@@ -39,4 +53,10 @@ def make_pos_model(model_type, train_file, test_file = None):
 
     tagger = train_tagger(model_type, train_sents)
 
-    return (tagger, tagger.evaluate(test_sents))
+    acc = tagger.evaluate(test_sents)
+    baseline = compute_baseline(reader_test.tagged_words())
+    kappa = (acc - baseline) / (1 - baseline)
+
+    cm, tag_list = conf_matrix(tagger, reader_test.words(), reader_test.tagged_words())
+
+    return (tagger, acc, kappa, (cm, tag_list))

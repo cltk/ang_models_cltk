@@ -2,8 +2,12 @@
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd "$SCRIPT_DIR/.."
-# create directory for binary models
-mkdir -p taggers/pos
+
+# create directories for binary models
+for tag in pos person number tense mood voice gender case degree strength inflection; do
+	mkdir -p taggers/$tag
+done
+
 # create directory for storing corpora
 mkdir -p corpora
 cd corpora

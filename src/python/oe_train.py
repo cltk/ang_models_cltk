@@ -21,7 +21,7 @@ arg_parser.add_argument('-f', '--feature', choices=features, help='Morphological
 
 def train_and_save_tagger(model_type, feature, untagged_text, verbose = False):
     training_file = 'corpora/oe_train.' + feature
-    tagger, acc, _, _ = make_horpho_model(model_type, feature, training_file)
+    tagger, acc, _, _ = make_morpho_model(model_type, feature, training_file)
 
     model_file = 'taggers/{1}/{0}.pickle'.format(model_type, feature)
     if model_type != 'crf': #annoying hack because the crf model saves itself.

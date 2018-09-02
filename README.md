@@ -1,17 +1,16 @@
-# English Models
+# Old English Models
 
-Trained POS tagger for Old English (OG) and Middle English (ME).
+Trained morphological taggers for Old English (OE)
 
 Training Set and Citations
 ==========================
 
+Bech, Kristin and Kristine Eide. 2014. The ISWOC corpus. Department of Literature, Area Studies and European Languages, University of Oslo. http://iswoc.github.io.
+
 Building the Training Set
 ==========================
 
-Old English
------------
-
-To download the ISWOC corpus and construct a tagged corpus for training the POS tagger, issue from the `english_models_cltk` directory:
+To download the ISWOC corpus and construct a tagged corpus for training the morphological tagger, issue from the `english_models_cltk` directory:
 
 ```bash
 $ ./scripts/make_oe_corpus.bash

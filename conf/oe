@@ -1,0 +1,6 @@
+language_name="Old English"
+corpus_name=iswoc-treebank
+corpus_url=git@github.com:iswoc/iswoc-treebank.git
+corpus_all_files=(æls.xml apt.xml chrona.xml wscp.xml or.xml)
+corpus_training_files=(æls.xml apt.xml chrona.xml wscp.xml)
+corpus_test_files=(or.xml)

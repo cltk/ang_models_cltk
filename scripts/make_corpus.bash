@@ -52,7 +52,7 @@ for tag in pos person number tense mood voice gender case degree strength inflec
 	done
 done
 
-num_tokens=`wc oe.pos | awk '{print $2}'`
+num_tokens=`wc $language.pos | awk '{print $2}'`
 echo "${language_name} corpus has ${num_tokens} tokens."
 
 

@@ -33,6 +33,8 @@ cd ..
 
 # parse and concatenate OE files
 for tag in all_features pos person number tense mood voice gender case degree strength inflection; do
+	echo "$tag"
+	
 	> $language.$tag
 
 	for xmlfile in "${corpus_all_files[@]}" ; do

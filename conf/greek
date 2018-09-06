@@ -1,0 +1,7 @@
+language_name="Ancient Greek"
+corpus_name=proiel-treebank
+corpus_url=git@github.com:proiel/proiel-treebank.git
+corpus_all_files=(greek-nt.xml hdt.xml chron.xml)
+corpus_training_files=(greek-nt.xml hdt.xml)
+corpus_test_files=(chron.xml)
+untagged_text=phaedrus.txt

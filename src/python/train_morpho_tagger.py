@@ -43,6 +43,12 @@ def conf_matrix(tagger, words, tagged_words):
     labels = np.unique(gold_tags)
     cm = confusion_matrix(gold_tags, predicted_tags, labels=labels)
     return pd.DataFrame(cm, index = labels, columns = labels)
+
+def verify_tagged_corpus(corpus_reader):
+    untagged = [word for word, tag in corpus_reader.tagged_words() if tag == None]
+    if len(untagged) > 0:
+        print('Error: mistagged words: ', untagged)
+        raise Exception('Mistagged Words in corpus')
     
 
 def make_morpho_model(model_type, feature, train_file, test_file = None):
@@ -52,6 +58,9 @@ def make_morpho_model(model_type, feature, train_file, test_file = None):
     reader_test  = TaggedCorpusReader('.', test_file)
     train_sents = reader_train.tagged_sents()
     test_sents = reader_test.tagged_sents()
+
+    verify_tagged_corpus(reader_train)
+    verify_tagged_corpus(reader_test)
 
     tagger = train_tagger(model_type, feature, train_sents)
 

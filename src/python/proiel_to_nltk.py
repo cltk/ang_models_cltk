@@ -26,8 +26,11 @@ if __name__ == '__main__':
 		for token in sentence.iter('token'):
 			if token.attrib.get('empty-token-sort'):
 				continue
+
 			form = token.attrib['form']
 			form = form.replace(' ', '.')
+			form = form.replace('\xa0', '.') # hack for crazy space encoding in some PROIEL files
+
 			pos = token.attrib['part-of-speech']
 			morpho = token.attrib['morphology']
 

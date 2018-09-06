@@ -4,3 +4,4 @@ corpus_url=git@github.com:proiel/proiel-treebank.git
 corpus_all_files=(latin-nt.xml caes-gal.xml cic-off.xml cic-att.xml pal-agr.xml per-aeth.xml)
 corpus_training_files=(latin-nt.xml caes-gal.xml cic-att.xml per-aeth.xml)
 corpus_test_files=(cic-off.xml pal-agr.xml)
+untagged_text=quintillian.txt

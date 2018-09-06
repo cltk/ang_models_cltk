@@ -3,6 +3,7 @@ import xml.etree.ElementTree as ET
 import argparse
 
 arg_parser = argparse.ArgumentParser(description='Convert PROEL-tagged corpus from XML to NLTK POS tagger format.')
+arg_parser.add_argument('-a', '--all_features', default=False, action='store_true', help='Output POS tages  + the complete morphological feature bundle')
 arg_parser.add_argument('-p', '--pos', default=False, action='store_true', help='Output POS tags.')
 arg_parser.add_argument('-o', '--person', default=False, action='store_true', help='Output person tags.')
 arg_parser.add_argument('-n', '--number', default=False, action='store_true', help='Output number tags.')

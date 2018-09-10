@@ -12,7 +12,7 @@ import pandas as pd
 from sklearn.metrics import confusion_matrix
 
 
-def train_tagger(model_type, feature, train_sents):
+def train_tagger(language, model_type, feature, train_sents):
     if model_type == 'unigram':
         tagger = UnigramTagger(train_sents)
     elif model_type == 'bigram':
@@ -25,7 +25,7 @@ def train_tagger(model_type, feature, train_sents):
         tagger = TrigramTagger(train_sents, backoff=tagger2)
     elif model_type == 'crf':
         tagger = CRFTagger()
-        tagger.train(train_sents, 'taggers/{0}/crf.pickle'.format(feature))
+        tagger.train(train_sents, 'taggers/{0}/{1}/crf.pickle'.format(language, feature))
     elif model_type == 'perceptron':
         tagger = PerceptronTagger(load=False)
         tagger.train(train_sents)
@@ -51,7 +51,7 @@ def verify_tagged_corpus(corpus_reader):
         raise Exception('Mistagged Words in corpus')
     
 
-def make_morpho_model(model_type, feature, train_file, test_file = None):
+def make_morpho_model(language, model_type, feature, train_file, test_file = None):
     test_file = train_file if test_file == None else test_file
 
     reader_train = TaggedCorpusReader('.', train_file)
@@ -62,7 +62,7 @@ def make_morpho_model(model_type, feature, train_file, test_file = None):
     verify_tagged_corpus(reader_train)
     verify_tagged_corpus(reader_test)
 
-    tagger = train_tagger(model_type, feature, train_sents)
+    tagger = train_tagger(language, model_type, feature, train_sents)
 
     acc = tagger.evaluate(test_sents)
     baseline = compute_baseline(reader_test.tagged_words())

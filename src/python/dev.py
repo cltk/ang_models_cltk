@@ -19,7 +19,7 @@ if __name__ == "__main__":
     for cv in range(0, num_folds):
         os.system('scripts/split_dataset.bash corpora/{0}/{0}.{1}'.format(language, tag))
         now = time.time()
-        _, acc, kappa, _  = make_morpho_model(model_type, tag, 'tmp/{0}_train.{1}'.format(language, tag), 'tmp/{0}_test.{1}'.format(language, tag))
+        _, acc, kappa, _  = make_morpho_model(language, model_type, tag, 'tmp/{0}_train.{1}'.format(language, tag), 'tmp/{0}_test.{1}'.format(language, tag))
         print("CV fold {0} accuracy = {1:.3} kappa = {2:.3f} in {3:.3f} seconds".format(cv + 1, acc, kappa, time.time() - now))
         tot_acc += acc
 
@@ -28,12 +28,12 @@ if __name__ == "__main__":
         os.system('rm -rf ./tmp')
 
     # validate on unseen text
-    tagger, test_acc, kappa, cm = make_morpho_model(model_type, tag, 'corpora/{0}/{0}_train.{1}'.format(language, tag), 'corpora/{0}/{0}_test.{1}'.format(language, tag))
+    tagger, test_acc, kappa, cm = make_morpho_model(language, model_type, tag, 'corpora/{0}/{0}_train.{1}'.format(language, tag), 'corpora/{0}/{0}_test.{1}'.format(language, tag))
     print("Test of model {0} for feature {1} on unseen text:\n\taccuracy = {2:.3f}\n\tkappa = {3:.3f}".format(model_type, tag, test_acc, kappa))
     print("\nConfusion matrix (rows = gold):")
     print(cm)
 
-    # time tagging of Beowulf by the trained tagger
+    # time tagging untagged text by the trained tagger
     with open(untagged) as untagged_text_file:
         untagged_text = untagged_text_file.read()
         tokens = word_tokenize(untagged_text)

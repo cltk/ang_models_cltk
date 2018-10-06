@@ -18,6 +18,8 @@ model_types = ['unigram', 'bigram', 'trigram', 'backoff', 'crf', 'perceptron', '
 arg_parser.add_argument('-m', '--model_type', choices=model_types, help='model type to train', default='perceptron')
 features = ['pos', 'person', 'number', 'tense', 'mood', 'gender', 'case', 'degree', 'strength', 'inflection']
 arg_parser.add_argument('-f', '--feature', choices=features, help='Morphological feature to train', default='pos')
+arg_parser.add_argument('-s', '--semi-supervised_file', default=None, help='Untagged text for semi-supervised training')
+arg_parser.add_argument('-c', '--semi-supervised-conf', default=0.95, help='Confidence level of tags for semi-supervised training')
 
 
 def train_and_save_tagger(language, model_type, feature, untagged_text, verbose = False):

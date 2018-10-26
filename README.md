@@ -13,10 +13,10 @@ Building the Training Set
 To download the ISWOC corpus and construct a tagged corpus for training the morphological tagger, issue from the `english_models_cltk` directory:
 
 ```bash
-$ ./scripts/make_oe_corpus.bash
+$ ./scripts/make_corpus.bash oe
 ```
 
-This will yield files `oe.$FEATURE`, where $FEATURE is one of `{pos person number tense mood voice gender case degree strength inflection}`, in the `corpora` subdirectory. It will also produce files `oe_train.$FEATURE` and `oe_test.$FEATURE`.  The latter are built from Orosius' history, while the former contain the rest of the texts in the ISWOC corpus.  Validating on an unseen text provides a more realistic estimate of the tagger's accuracy on novel texts.
+This will yield files `oe.$FEATURE`, where $FEATURE is one of `{pos person number tense mood voice gender case degree strength inflection}`, in the `corpora/oe` subdirectory. It will also produce files `oe_train.$FEATURE` and `oe_test.$FEATURE`.  The latter are built from Orosius' history, while the former contain the rest of the texts in the ISWOC corpus.  Validating on an unseen text provides a more realistic estimate of the tagger's accuracy on novel texts.
 
 The POS and morphological tag scheme is given by the following XML snippet:
 
@@ -162,12 +162,12 @@ The following script will train four POS (only) tagging models: Unigram, Backoff
 Note: you need to have an installation of `shuf` (Linux) or `gshuf` (Mac; `brew install coreutils`).
 
 ```bash
-$ ./scripts/evaluate_all_models.bash
+$ ./scripts/evaluate_all_models.bash oe
 ```
 
 For each model,
 1.  Ten-fold cross validation is run on the whole corpus, where in each fold about 10% of the corpus is randomly selected as a test set, while the rest is used for training the tagger.
-2.  The tagger is trained on `corpora/oe_train.pos` and evaluated on `oe_test.pos`.
+2.  The tagger is trained on `corpora/oe/oe_train.pos` and evaluated on `corpora/oe/oe_test.pos`.
 3.	The tagging speed of the trained tagger is measured as the time taken to tag the text of Beowulf.
 
 For each model trained, the script outputs the average acccuracy for the cross-validation folds, and the test accuracy and Cohen's kappa on the test set.  A confusion matrix for the test set is also produced, for error analysis.
@@ -324,34 +324,39 @@ We see that the Perceptron tagger is the most accurate but also slowest.
 Training Taggers
 =================
 
-The python module at `src/python/oe_train.py` is used to train POS taggers.  
+The python module at `src/python/train.py` is used to train POS taggers.  
 
 For help on using the script, use:
 
 ```bash
-usage: oe_train.py [-h] [-u UNTAGGED_TEXT_FILE] [-v]
-                   [-m {unigram,bigram,trigram,backoff,crf,perceptron,all}]
-                   [-f {pos,person,number,tense,mood,gender,case,degree,strength,inflection}]
+usage: train.py [-h] [-l LANGUAGE] [-u UNTAGGED_TEXT_FILE] [-v]
+                [-m {unigram,bigram,trigram,backoff,crf,perceptron,all}]
+                [-f {pos,person,number,tense,mood,gender,case,degree,strength,inflection}]
+                [-s SEMI_SUPERVISED_FILE] [-c SEMI_SUPERVISED_CONF]
 
-Train morphological tagger(s) for Old English.
+Train morphological tagger(s).
 
 optional arguments:
   -h, --help            show this help message and exit
+  -l LANGUAGE, --language LANGUAGE
+                        train models for this language
   -u UNTAGGED_TEXT_FILE, --untagged_text_file UNTAGGED_TEXT_FILE
                         untagged text for testing
   -v, --verbose
-  -m {unigram,bigram,trigram,backoff,crf,perceptron,all}, 
-  --model_type {unigram,bigram,trigram,backoff,crf,perceptron,all}
+  -m {unigram,bigram,trigram,backoff,crf,perceptron,all}, --model_type {unigram,bigram,trigram,backoff,crf,perceptron,all}
                         model type to train
-  -f {pos,person,number,tense,mood,gender,case,degree,strength,inflection}, 
-  --feature {pos,person,number,tense,mood,gender,case,degree,strength,inflection}
+  -f {pos,person,number,tense,mood,gender,case,degree,strength,inflection}, --feature {pos,person,number,tense,mood,gender,case,degree,strength,inflection}
                         Morphological feature to train
+  -s SEMI_SUPERVISED_FILE, --semi-supervised_file SEMI_SUPERVISED_FILE
+                        Untagged text for semi-supervised training
+  -c SEMI_SUPERVISED_CONF, --semi-supervised-conf SEMI_SUPERVISED_CONF
+                        Confidence level of tags for semi-supervised training
 ```
 
-In the simplest case, all supported models are trained on the POS feature and stored in `taggers/pos`. Unless the `-v` flag is set, the script is silent.
+In the simplest case, all supported models are trained on the POS feature and stored in `taggers/oe/{FEATURE}`. Unless the `-v` flag is set, the script is silent.  The language defaults to `oe`.  
 
 ```bash
-python src/python/oe_train.py all
+python src/python/train.py -m all
 
 ls -l taggers/pos
 total 6296
@@ -366,7 +371,7 @@ total 6296
 With `-v` set, the output lists the location of the saved tagger and a sample of its output:
 
 ```bash
-python src/python/oe_train.py crf -v
+python src/python/train.py -m crf -v
 Model crf saved at taggers/pos/crf.pickle.  Training accuracy = 0.925
 Sample tagging output: [('Hwæt', 'I-'), ('!', 'C-'), ('We', 'NE'), ('Gardena', 'NE'), ('in', 'R-'), ('geardagum', 'NB'), (',', 'C-'), ('þeodcyninga', 'NB'), (',', 'C-'), ('þrym', 'PY')]
 ```
@@ -374,7 +379,7 @@ Sample tagging output: [('Hwæt', 'I-'), ('!', 'C-'), ('We', 'NE'), ('Gardena', 
 To train a tagger for a different feature, use the `-f` command-line argument:
 
 ```bash
-python src/python/oe_train.py -m perceptron -f case -v
+python src/python/train.py -m perceptron -f case -v
 Model perceptron for feature case saved at taggers/case/perceptron.pickle. Training accuracy = 0.983
 Sample tagging output: [('Hwæt', 'A'), ('!', '-'), ('We', 'N'), ('Gardena', '-'), ('in', '-'), ('geardagum', 'D'), (',', '-'), ('þeodcyninga', 'G'), (',', 'G'), ('þrym', 'G')]
 ```

@@ -2,11 +2,13 @@ function decline(nom_sing, acc_sing, gen_sing, dat_sing, nom_pl, acc_pl, gen_pl,
 	printf "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n",nom_sing, acc_sing, gen_sing, dat_sing, nom_pl, acc_pl, gen_pl, dat_pl
 }
 
-function conjugate(infinitive, infinitive2, 
+function conjugate(type, class,
+		infinitive, infinitive2, 
 		sg1_pres_indc, sg2_pres_indc, pl_pres_indc, sg_pres_subj, pl_pres_subj, 
 		sg1_past_indc, sg2_past_indc, pl_past_indc, sg_past_subj, pl_past_subj,
 		sg_impr, pl_impr,
 		pres_ptc, past_ptc) {
+	printf "type=%s\tclass=%s\t", type, class
 	printf "%s\t%s\t", infinitive, infinitive2
 	printf "%s\t%s\t%s\t%s\t%s\t", sg1_pres_indc, sg2_pres_indc, pl_pres_indc, sg_pres_subj, pl_pres_subj
 	printf "%s\t%s\t%s\t%s\t%s\t", sg1_past_indc, sg2_past_indc, pl_past_indc, sg_past_subj, pl_past_subj
@@ -17,13 +19,12 @@ function conjugate(infinitive, infinitive2,
 
 function pos_param(pos) {
 	split($0, a, /\|/)
-	
 	delete a[1]
-	for (i in a) {
-		gsub(/}/, "", a[i])
-		if (a[i] ~ /=/) delete a[i]
-	}
 
+	pos++
+	while (a[pos] ~ /=/) pos++
+
+	gsub(/}/, "", a[pos])
 	return a[pos]
 }
 
@@ -144,6 +145,9 @@ function get_basic_vars() {
 }
 
 /ang-conj\|/ {
+	type = named_param("type")
+	class = named_param("class")
+
 	infinitive = pos_param(1)
 	infinitive2 = pos_param(2)
 
@@ -167,7 +171,8 @@ function get_basic_vars() {
 	pres_ptc = pos_param(17)
 	past_ptc = pos_param(18)
 
-	conjugate(infinitive, infinitive2, 
+	conjugate(type, class,
+		infinitive, infinitive2, 
 		sg1_pres_indc, sg2_pres_indc, pl_pres_indc, sg_pres_subj, pl_pres_subj, 
 		sg1_past_indc, sg2_past_indc, pl_past_indc, sg_past_subj, pl_past_subj,
 		sg_impr, pl_impr,

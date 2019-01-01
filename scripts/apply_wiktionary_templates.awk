@@ -17,18 +17,22 @@ function conjugate(type, class,
 	printf "\n"
 }
 
-function pos_param(pos) {
+function pos_param(pos,  a) {
+	orig_pos = pos
 	split($0, a, /\|/)
 	delete a[1]
 
-	pos++
-	while (a[pos] ~ /=/) pos++
+	diff = 2
+	while (a[diff] ~ /=/) diff++
+	pos += diff - 1
 
 	gsub(/}/, "", a[pos])
+
+	if (debug) print "pos " orig_pos " (actual " pos ")=" a[pos]
 	return a[pos]
 }
 
-function named_param(key) {
+function named_param(key,  a) {
 	if (match($0, key "= ?([^|{}]*)[|{}]", a)) {
 		if (debug) print key "=" a[1]
 		return a[1]
@@ -40,8 +44,6 @@ function named_param(key) {
 function get_basic_vars() {
 	pos1 = pos_param(1)
 	pos2 = pos_param(2)
-
-	if (debug) print pos1 "\t" pos2
 
 	alt1 = named_param("alt1")
 	alt2 = named_param("alt2")

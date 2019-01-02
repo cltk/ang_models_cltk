@@ -1,13 +1,15 @@
-function decline_noun(nom_sing, acc_sing, gen_sing, dat_sing, nom_pl, acc_pl, gen_pl, dat_pl) {
+function decline_noun(word, type, nom_sing, acc_sing, gen_sing, dat_sing, nom_pl, acc_pl, gen_pl, dat_pl) {
+	printf "%s\tnoun\t%s\t", word, type
 	printf "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n",nom_sing, acc_sing, gen_sing, dat_sing, nom_pl, acc_pl, gen_pl, dat_pl
 }
 
-function decline_adj(nom_sg_m, acc_sg_m, gen_sg_m, dat_sg_m, ins_sg_m,
+function decline_adj(word, type, nom_sg_m, acc_sg_m, gen_sg_m, dat_sg_m, ins_sg_m,
 		nom_sg_f, acc_sg_f, gen_sg_f, dat_sg_f, ins_sg_f,
 		nom_sg_n, acc_sg_n, gen_sg_n, dat_sg_n, ins_sg_n,
 		nom_pl_m, acc_pl_m, gen_pl_m, dat_pl_m, ins_pl_m,
 		nom_pl_f, acc_pl_f, gen_pl_f, dat_pl_f, ins_pl_f,
 		nom_pl_n, acc_pl_n, gen_pl_n, dat_pl_n, ins_pl_n) {
+	printf "%s\tadjective\t%s\t", word, type
 	printf "%s\t%s\t%s\t%s\t%s\t", nom_sg_m, acc_sg_m, gen_sg_m, dat_sg_m, ins_sg_m
 	printf "%s\t%s\t%s\t%s\t%s\t", nom_sg_f, acc_sg_f, gen_sg_f, dat_sg_f, ins_sg_f
 	printf "%s\t%s\t%s\t%s\t%s\t", nom_sg_n, acc_sg_n, gen_sg_n, dat_sg_n, ins_sg_n
@@ -18,13 +20,13 @@ function decline_adj(nom_sg_m, acc_sg_m, gen_sg_m, dat_sg_m, ins_sg_m,
 
 }
 
-function conjugate(type, class,
+function conjugate(word, type, class,
 		infinitive, infinitive2, 
 		sg1_pres_indc, sg2_pres_indc, sg3_pres_indc, pl_pres_indc, sg_pres_subj, pl_pres_subj, 
 		sg1_past_indc, sg2_past_indc, sg3_past_indc, pl_past_indc, sg_past_subj, pl_past_subj,
 		sg_impr, pl_impr,
 		pres_ptc, past_ptc) {
-	printf "type=%s\tclass=%s\t", type, class
+	printf "%s\tverb\t%s\t%s\t", word, type, class
 	printf "%s\t%s\t", infinitive, infinitive2
 	printf "%s\t%s\t%s\t%s\t%s\t%s\t", sg1_pres_indc, sg2_pres_indc, sg3_pres_indc, pl_pres_indc, sg_pres_subj, pl_pres_subj
 	printf "%s\t%s\t%s\t%s\t%s\t%s\t", sg1_past_indc, sg2_past_indc, sg3_past_indc, pl_past_indc, sg_past_subj, pl_past_subj
@@ -33,7 +35,7 @@ function conjugate(type, class,
 	printf "\n"
 }
 
-function pos_param(pos,  a) {
+function pos_param(pos,  a, b) {
 	split($0, a, /\|/)
 	
 	i = 2
@@ -89,7 +91,7 @@ function get_basic_vars() {
 	gen_pl = (alt2 ? alt2 : pos2 ? pos2 : alt1 ? alt1 : pos1) "a"
 	dat_pl = (alt2 ? alt2 : pos2 ? pos2 : alt1 ? alt1 : pos1) "um"
 
-	decline_noun(nom_sing, acc_sing, gen_sing, dat_sing, nom_pl, acc_pl, gen_pl, dat_pl)
+	decline_noun($1, "strong a-stem", nom_sing, acc_sing, gen_sing, dat_sing, nom_pl, acc_pl, gen_pl, dat_pl)
 }
 
 /ang-decl-noun-a-m/ {
@@ -108,7 +110,7 @@ function get_basic_vars() {
 	gen_pl = (alt2 ? alt2 : pos2 ? pos2 : alt1 ? alt1 : pos1) (vowel ? "n" : "") "a"
 	dat_pl = (alt2 ? alt2 : pos2 ? pos2 : alt1 ? alt1 : pos1) (vowel ? "" : "u") "m" (vowel ? ("," (alt2 ? alt2 : pos2 ? pos2 : alt1 ? alt1 : pos1) "um") : "")
 
-	decline_noun(nom_sing, acc_sing, gen_sing, dat_sing, nom_pl, acc_pl, gen_pl, dat_pl)
+	decline_noun($1, "strong a-stem", nom_sing, acc_sing, gen_sing, dat_sing, nom_pl, acc_pl, gen_pl, dat_pl)
 }
 
 /ang-decl-noun-cons-m/ {
@@ -124,7 +126,7 @@ function get_basic_vars() {
 	gen_pl = nom_sing "a"
 	dat_pl = nom_sing "um"
 
-	decline_noun(nom_sing, acc_sing, gen_sing, dat_sing, nom_pl, acc_pl, gen_pl, dat_pl)	
+	decline_noun($1, "strong consonant stem", nom_sing, acc_sing, gen_sing, dat_sing, nom_pl, acc_pl, gen_pl, dat_pl)	
 }
 
 /ang-decl-noun-n-f/ {
@@ -142,7 +144,7 @@ function get_basic_vars() {
 	gen_pl = stem_pl "ena"
 	dat_pl = stem_pl "um"
 
-	decline_noun(nom_sing, acc_sing, gen_sing, dat_sing, nom_pl, acc_pl, gen_pl, dat_pl)	
+	decline_noun($1, "weak", nom_sing, acc_sing, gen_sing, dat_sing, nom_pl, acc_pl, gen_pl, dat_pl)	
 }
 
 /ang-decl-noun-o-f/ {
@@ -163,25 +165,45 @@ function get_basic_vars() {
 	gen_pl = stem "a"
 	dat_pl = stem "um"
 
-	decline_noun(nom_sing, acc_sing, gen_sing, dat_sing, nom_pl, acc_pl, gen_pl, dat_pl)	
+	decline_noun($1, "strong ō-stem", nom_sing, acc_sing, gen_sing, dat_sing, nom_pl, acc_pl, gen_pl, dat_pl)	
 }
 
 /ang-decl-noun-ja-m/ {
 	get_basic_vars()
 
-	stem_sing = alt1 ? alt1 : pos1
-	nom_sing = stem_sing "e"
+	stem1 = alt1 ? alt1 : pos1
+	stem2 = alt2 ? alt2 : pos2 ? pos2 : alt1 ? alt1 : pos1
+
+	nom_sing = stem1 "e"
 	acc_sing = nom_sing
-	gen_sing = stem_sing "es"
+	gen_sing = stem1 "es"
 	dat_sing = nom_sing
 
-	stem_pl = alt2 ? alt2 : pos2 ? pos2 : alt1 ? alt1 : pos1
-	nom_pl = stem_pl "as"
+	nom_pl = stem2 "as"
 	acc_pl = nom_pl
-	gen_pl = stem_pl "a"
-	dat_pl = stem_pl "um"
+	gen_pl = stem2 "a"
+	dat_pl = stem2 "um"
 
-	decline_noun(nom_sing, acc_sing, gen_sing, dat_sing, nom_pl, acc_pl, gen_pl, dat_pl)
+	decline_noun($1, "strong ja-stem", nom_sing, acc_sing, gen_sing, dat_sing, nom_pl, acc_pl, gen_pl, dat_pl)
+}
+
+/ang-decl-noun-ja-n/ {
+	get_basic_vars()
+
+	stem1 = alt1 ? alt1 : pos1
+	stem2 = alt2 ? alt2 : pos2 ? pos2 : alt1 ? alt1 : pos1
+
+	nom_sing = stem1 "e"
+	acc_sing = nom_sing
+	gen_sing = stem1 "es"
+	dat_sing = nom_sing
+
+	nom_pl = stem2 "u"
+	acc_pl = nom_pl
+	gen_pl = stem2 "a"
+	dat_pl = stem2 "um"
+
+	decline_noun($1, "strong ja-stem", nom_sing, acc_sing, gen_sing, dat_sing, nom_pl, acc_pl, gen_pl, dat_pl)
 }
 
 /ang-decl-noun-i-f/ {
@@ -201,7 +223,7 @@ function get_basic_vars() {
 	gen_pl = stem "a"
 	dat_pl = stem "um"
 
-	decline_noun(nom_sing, acc_sing, gen_sing, dat_sing, nom_pl, acc_pl, gen_pl, dat_pl)
+	decline_noun($1, "strong i-stem", nom_sing, acc_sing, gen_sing, dat_sing, nom_pl, acc_pl, gen_pl, dat_pl)
 }
 
 /ang-decl-noun-u-f/ {
@@ -221,8 +243,89 @@ function get_basic_vars() {
 	gen_pl = nom_pl
 	dat_pl = stem "um"
 
-	decline_noun(nom_sing, acc_sing, gen_sing, dat_sing, nom_pl, acc_pl, gen_pl, dat_pl)
+	decline_noun($1, "strong u-stem", nom_sing, acc_sing, gen_sing, dat_sing, nom_pl, acc_pl, gen_pl, dat_pl)
 }
+
+/ang-decl-noun-n-m/ {
+	get_basic_vars()
+
+	vowel = named_param(vowel)
+
+	stem1 = alt1 ? alt1 : pos1
+	stem2 = alt2 ? alt2 : pos2 ? pos2 : alt1 ? alt1 : pos1
+
+	nom_sing = stem1 (vowel ? "" : "a")
+	acc_sing = nom_sing "n"
+	gen_sing = acc_sing
+	dat_sing = acc_sing
+
+	nom_pl = stem2 (vowel ? "" : "a") "n"
+	acc_pl = nom_pl
+	gen_pl = stem2 (vowel ? "" : "e") "na"
+	dat_pl = stem2 (vowel ? "" : "u") "m"
+
+	decline_noun($1, "weak", nom_sing, acc_sing, gen_sing, dat_sing, nom_pl, acc_pl, gen_pl, dat_pl)
+}
+
+/ang-decl-noun-n-f/ {
+	get_basic_vars()
+
+	stem1 = alt1 ? alt1 : pos1
+	stem2 = alt2 ? alt2 : pos2 ? pos2 : alt1 ? alt1 : pos1
+
+	nom_sing = stem1 "e"
+	acc_sing = stem1 "an"
+	gen_sing = acc_sing
+	dat_sing = acc_sing
+
+	nom_pl = stem2 "an"
+	acc_pl = nom_pl
+	gen_pl = stem2 "ena"
+	dat_pl = stem2 "um"
+
+	decline_noun($1, "weak", nom_sing, acc_sing, gen_sing, dat_sing, nom_pl, acc_pl, gen_pl, dat_pl)
+}
+
+/ang-decl-noun-i-m/ {
+	get_basic_vars()
+
+	short = named_param("short")
+
+	stem = alt1 ? alt1 : pos1
+
+	nom_sing = stem (short ? "e" : "")
+	acc_sing = nom_sing
+	gen_sing = stem "es"
+	dat_sing = stem "e"
+
+	nom_pl = stem "e" "," stem1 "as"
+	acc_pl = nom_pl
+	gen_pl = stem "a"
+	dat_pl = stem "um"
+
+	decline_noun($1, "strong i-stem", nom_sing, acc_sing, gen_sing, dat_sing, nom_pl, acc_pl, gen_pl, dat_pl)
+}
+
+/ang-decl-noun-i-f/ {
+	get_basic_vars()
+
+	short = named_param("short")
+
+	stem = alt1 ? alt1 : pos1
+
+	nom_sing = stem (short ? "e" : "")
+	acc_sing = (short ? "" : (stem ",")) stem "e" 
+	gen_sing = stem "e"
+	dat_sing = gen_sing
+
+	nom_pl = stem "e" "," stem1 "as"
+	acc_pl = nom_pl
+	gen_pl = stem "a"
+	dat_pl = stem "um"
+
+	decline_noun($1, "strong i-stem", nom_sing, acc_sing, gen_sing, dat_sing, nom_pl, acc_pl, gen_pl, dat_pl)
+}
+
 
 /ang-decl-noun\|/ {
 	nom_sing = pos_param(1)
@@ -245,7 +348,7 @@ function get_basic_vars() {
 	gen_pl == "-" ? "-" : gen_pl
 	dat_pl == "-" ? "-" : dat_pl
 
-	decline_noun(nom_sing, acc_sing, gen_sing, dat_sing, nom_pl, acc_pl, gen_pl, dat_pl)	
+	decline_noun($1, "", nom_sing, acc_sing, gen_sing, dat_sing, nom_pl, acc_pl, gen_pl, dat_pl)	
 }
 
 /ang-conj\|/ {
@@ -319,7 +422,7 @@ function get_basic_vars() {
 	pres_ptc = stem1 "ende"
 	past_ptc = pp_g ? ("(ġe)" pp_g) : pp ?  pp : ("(ġe)" stem4 "en")
 
-	conjugate(type, class,
+	conjugate($1, type, class,
 		infinitive, infinitive2, 
 		sg1_pres_indc, sg2_pres_indc, sg3_pres_indc, pl_pres_indc, sg_pres_subj, pl_pres_subj, 
 		sg1_past_indc, sg2_past_indc, sg3_past_indc, pl_past_indc, sg_past_subj, pl_past_subj,
@@ -369,7 +472,7 @@ function get_basic_vars() {
 	pres_ptc = stem1 "ende"
 	past_ptc = pp_g ? ("(ġe)" pp_g) : pp ?  pp : ("(ġe)" stem1 "ed")
 
-	conjugate(type, class,
+	conjugate($1, type, class,
 		infinitive, infinitive2, 
 		sg1_pres_indc, sg2_pres_indc, sg3_pres_indc, pl_pres_indc, sg_pres_subj, pl_pres_subj, 
 		sg1_past_indc, sg2_past_indc, sg3_past_indc, pl_past_indc, sg_past_subj, pl_past_subj,
@@ -410,7 +513,7 @@ function get_basic_vars() {
 	pres_ptc = stem "iende" "," stem "iġende"
 	past_ptc = pp_g ? ("(ġe)" pp_g) : pp ?  pp : ("(ġe)" stem "od")
 
-	conjugate(type, class,
+	conjugate($1, type, class,
 		infinitive, infinitive2, 
 		sg1_pres_indc, sg2_pres_indc, sg3_pres_indc, pl_pres_indc, sg_pres_subj, pl_pres_subj, 
 		sg1_past_indc, sg2_past_indc, sg3_past_indc, pl_past_indc, sg_past_subj, pl_past_subj,
@@ -419,7 +522,7 @@ function get_basic_vars() {
 
 }
 
-/ang-decl-adj/ {
+function adj_strong() {
 	get_basic_vars()
 
 	nomsg = named_param("nomsg")
@@ -470,12 +573,24 @@ function get_basic_vars() {
 	dat_pl_n = dat_pl_f
 	ins_pl_n = ins_pl_f
 
-	decline_adj(nom_sg_m, acc_sg_m, gen_sg_m, dat_sg_m, ins_sg_m,
+	decline_adj($1, "strong", nom_sg_m, acc_sg_m, gen_sg_m, dat_sg_m, ins_sg_m,
 		nom_sg_f, acc_sg_f, gen_sg_f, dat_sg_f, ins_sg_f,
 		nom_sg_n, acc_sg_n, gen_sg_n, dat_sg_n, ins_sg_n,
 		nom_pl_m, acc_pl_m, gen_pl_m, dat_pl_m, ins_pl_m,
 		nom_pl_f, acc_pl_f, gen_pl_f, dat_pl_f, ins_pl_f,
 		nom_pl_n, acc_pl_n, gen_pl_n, dat_pl_n, ins_pl_n)
+}
+
+function adj_weak() {
+	get_basic_vars()
+
+	nomsg = named_param("nomsg")
+	altnomsg = named_param("altnomsg")
+	short = named_param("short")
+	
+	nom_stem = altnomsg ? altnomsg : nomsg ? nomsg : alt1 ? alt1 : pos1
+	stem1 = alt1 ? alt1 : pos1
+	stem2 = alt2 ? alt2 : pos2 ? pos2 : alt1 ? alt1 : pos1
 
 	# Weak declension
 
@@ -517,11 +632,135 @@ function get_basic_vars() {
 	dat_pl_n = dat_pl_m
 	ins_pl_n = ins_pl_m
 
-	decline_adj(nom_sg_m, acc_sg_m, gen_sg_m, dat_sg_m, ins_sg_m,
+	decline_adj($1, "weak", nom_sg_m, acc_sg_m, gen_sg_m, dat_sg_m, ins_sg_m,
 		nom_sg_f, acc_sg_f, gen_sg_f, dat_sg_f, ins_sg_f,
 		nom_sg_n, acc_sg_n, gen_sg_n, dat_sg_n, ins_sg_n,
 		nom_pl_m, acc_pl_m, gen_pl_m, dat_pl_m, ins_pl_m,
 		nom_pl_f, acc_pl_f, gen_pl_f, dat_pl_f, ins_pl_f,
 		nom_pl_n, acc_pl_n, gen_pl_n, dat_pl_n, ins_pl_n)
 }
+
+/ang-decl-adj\|/ {
+	adj_strong()
+	adj_weak()
+}
+
+/ang-decl-adj-con\|/ {
+	get_basic_vars()
+
+	pos3 = pos_param(3)
+
+	nomsg = named_param("nomsg")
+	altnomsg = named_param("altnomsg")
+	short = named_param("short")
+	alt3 = named_param("alt3")
+	alt4 = named_param("alt4")
+
+	stem1 = (alt1 ? alt1 : pos1) pos2 pos3
+	stem2 = (alt4 ? alt4 : pos4 ? pos4 : alt1 ? alt1 : pos1) pos3
+	stem3 = (alt4 ? alt4 : pos4 ? pos4 : alt1 ? alt1 : pos1) pos2 pos3
+
+	# Strong Declension
+
+	# Singular
+	nom_sg_m = (altnomsg ? altnomsg : nomsg ? nomsg : alt1 ? alt1 : pos1) pos2 pos3
+	acc_sg_m = stem1 "ne"
+	gen_sg_m = stem2 "es" "," stem3 "es"
+	dat_sg_m = stem2 "um" "," stem3 "um"
+	ins_sg_m = stem2 "e"  "," stem3 "e"
+
+	nom_sg_f = short ? (stem2 "u") : nom_sg_m
+	acc_sg_f = stem2 "e" "," stem3 "e"
+	gen_sg_f = stem3 "re"
+	dat_sg_f = gen_sg_f
+	ins_sg_f = gen_sg_f
+
+	nom_sg_n = nom_sg_m
+	acc_sg_n = acc_sg_m
+	gen_sg_n = gen_sg_m
+	dat_sg_n = dat_sg_m
+	ins_sg_n = ins_sg_m
+
+	#Plural
+	nom_pl_m = stem2 "es" "," stem3 "es"
+	acc_pl_m = nom_pl_m
+	gen_pl_m = stem1 "ra"
+	dat_pl_m = dat_sg_m
+	ins_pl_m = dat_pl_m
+
+	nom_pl_f = stem2 "a" "," stem2 "e" "," stem3 "a" "," stem3 "e"
+	acc_pl_f = nom_pl_f
+	gen_pl_f = gen_pl_m
+	dat_pl_f = dat_pl_m
+	ins_pl_f = ins_pl_m
+
+	nom_pl_n = short ? (stem2 "u" "," stem3 "u") : nom_sg_m
+	acc_pl_n = nom_pl_f
+	gen_pl_n = gen_pl_m
+	dat_pl_n = dat_pl_m
+	ins_pl_n = ins_pl_m
+
+	decline_adj($1, "strong", nom_sg_m, acc_sg_m, gen_sg_m, dat_sg_m, ins_sg_m,
+		nom_sg_f, acc_sg_f, gen_sg_f, dat_sg_f, ins_sg_f,
+		nom_sg_n, acc_sg_n, gen_sg_n, dat_sg_n, ins_sg_n,
+		nom_pl_m, acc_pl_m, gen_pl_m, dat_pl_m, ins_pl_m,
+		nom_pl_f, acc_pl_f, gen_pl_f, dat_pl_f, ins_pl_f,
+		nom_pl_n, acc_pl_n, gen_pl_n, dat_pl_n, ins_pl_n)
+
+	# Weak declension
+
+	# Singular
+	nom_sg_m = stem2 "a" "," stem3 "a"
+	acc_sg_m = stem2 "an" "," stem3 "an"
+	gen_sg_m = acc_sg_m
+	dat_sg_m = acc_sg_m
+	ins_sg_m = acc_sg_m
+
+	nom_sg_f = stem2 "e" "," stem3 "e"
+	acc_sg_f = acc_sg_m
+	gen_sg_f = acc_sg_m
+	dat_sg_f = acc_sg_m
+	ins_sg_f = acc_sg_m
+
+	nom_sg_n = nom_sg_m
+	acc_sg_n = nom_sg_m
+	gen_sg_n = acc_sg_m
+	dat_sg_n = acc_sg_m
+	ins_sg_n = acc_sg_m
+
+	#Plural
+	nom_pl_m = acc_sg_m
+	acc_pl_m = acc_sg_m
+	gen_pl_m = stem1 "ra" "," stem2 "ena" "," stem3 "ena"
+	dat_pl_m = stem2 "um" "," stem3 "um"
+	ins_pl_m = dat_pl_m
+
+	nom_pl_f = nom_pl_m
+	acc_pl_f = acc_pl_m
+	gen_pl_f = gen_pl_m
+	dat_pl_f = dat_pl_m
+	ins_pl_f = ins_pl_m
+
+	nom_pl_n = nom_pl_m
+	acc_pl_n = nom_pl_m
+	gen_pl_n = gen_pl_m
+	dat_pl_n = dat_pl_m
+	ins_pl_n = ins_pl_m
+
+	decline_adj($1, "weak", nom_sg_m, acc_sg_m, gen_sg_m, dat_sg_m, ins_sg_m,
+		nom_sg_f, acc_sg_f, gen_sg_f, dat_sg_f, ins_sg_f,
+		nom_sg_n, acc_sg_n, gen_sg_n, dat_sg_n, ins_sg_n,
+		nom_pl_m, acc_pl_m, gen_pl_m, dat_pl_m, ins_pl_m,
+		nom_pl_f, acc_pl_f, gen_pl_f, dat_pl_f, ins_pl_f,
+		nom_pl_n, acc_pl_n, gen_pl_n, dat_pl_n, ins_pl_n)
+}
+
+/ang-decl-adj-strong/ {
+	adj_strong()
+}
+
+/ang-decl-adj-weak/ {
+	adj_weak()
+}
+
 

@@ -1,0 +1,7 @@
+betera	{{ang-decl-adj-weak|beter}}
+wyrsa	{{ang-decl-adj-weak|wirs}}
+lengra	{{ang-decl-adj-weak|lengr}}
+strengra	{{ang-decl-adj-weak|strengr}}
+caldra	{{ang-decl-adj-weak|caldr}}
+fægerra	{{ang-decl-adj-weak|fæġerr}}
+ƿyrsa	{{ang-decl-adj-weak|pirs}}

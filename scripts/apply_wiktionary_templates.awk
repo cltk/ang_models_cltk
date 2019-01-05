@@ -1,5 +1,9 @@
 function decline_noun(word, type, nom_sing, acc_sing, gen_sing, dat_sing, nom_pl, acc_pl, gen_pl, dat_pl) {
-	printf "%s\tnoun\t%s\t", word, type
+	if (no_pos) {
+		print "%s\t", word
+		} else {
+		printf "%s\tnoun\t%s\t", word, type
+	}
 	printf "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n",nom_sing, acc_sing, gen_sing, dat_sing, nom_pl, acc_pl, gen_pl, dat_pl
 }
 
@@ -9,7 +13,11 @@ function decline_adj(word, type, nom_sg_m, acc_sg_m, gen_sg_m, dat_sg_m, ins_sg_
 		nom_pl_m, acc_pl_m, gen_pl_m, dat_pl_m, ins_pl_m,
 		nom_pl_f, acc_pl_f, gen_pl_f, dat_pl_f, ins_pl_f,
 		nom_pl_n, acc_pl_n, gen_pl_n, dat_pl_n, ins_pl_n) {
-	printf "%s\tadjective\t%s\t", word, type
+	if (no_pos) {
+		print "%s\t", word
+		} else {
+		printf "%s\tadjective\t%s\t", word, type
+	}
 	printf "%s\t%s\t%s\t%s\t%s\t", nom_sg_m, acc_sg_m, gen_sg_m, dat_sg_m, ins_sg_m
 	printf "%s\t%s\t%s\t%s\t%s\t", nom_sg_f, acc_sg_f, gen_sg_f, dat_sg_f, ins_sg_f
 	printf "%s\t%s\t%s\t%s\t%s\t", nom_sg_n, acc_sg_n, gen_sg_n, dat_sg_n, ins_sg_n
@@ -26,7 +34,11 @@ function conjugate(word, type, class,
 		sg1_past_indc, sg2_past_indc, sg3_past_indc, pl_past_indc, sg_past_subj, pl_past_subj,
 		sg_impr, pl_impr,
 		pres_ptc, past_ptc) {
-	printf "%s\tverb\t%s\t%s\t", word, type, class
+	if (no_pos) {
+		print "%s\t", word
+		} else {
+		printf "%s\tverb\t%s\t%s\t", word, type, class
+	}
 	printf "%s\t%s\t", infinitive, infinitive2
 	printf "%s\t%s\t%s\t%s\t%s\t%s\t", sg1_pres_indc, sg2_pres_indc, sg3_pres_indc, pl_pres_indc, sg_pres_subj, pl_pres_subj
 	printf "%s\t%s\t%s\t%s\t%s\t%s\t", sg1_past_indc, sg2_past_indc, sg3_past_indc, pl_past_indc, sg_past_subj, pl_past_subj

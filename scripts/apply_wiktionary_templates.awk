@@ -1,6 +1,8 @@
+#!/usr/bin/gawk -f
+
 function decline_noun(word, type, nom_sing, acc_sing, gen_sing, dat_sing, nom_pl, acc_pl, gen_pl, dat_pl) {
 	if (no_pos) {
-		print "%s\t", word
+		printf "%s\t", word
 		} else {
 		printf "%s\tnoun\t%s\t", word, type
 	}
@@ -14,7 +16,7 @@ function decline_adj(word, type, nom_sg_m, acc_sg_m, gen_sg_m, dat_sg_m, ins_sg_
 		nom_pl_f, acc_pl_f, gen_pl_f, dat_pl_f, ins_pl_f,
 		nom_pl_n, acc_pl_n, gen_pl_n, dat_pl_n, ins_pl_n) {
 	if (no_pos) {
-		print "%s\t", word
+		printf "%s\t", word
 		} else {
 		printf "%s\tadjective\t%s\t", word, type
 	}
@@ -35,7 +37,7 @@ function conjugate(word, type, class,
 		sg_impr, pl_impr,
 		pres_ptc, past_ptc) {
 	if (no_pos) {
-		print "%s\t", word
+		printf "%s\t", word
 		} else {
 		printf "%s\tverb\t%s\t%s\t", word, type, class
 	}
@@ -48,7 +50,7 @@ function conjugate(word, type, class,
 }
 
 function pos_param(pos,  a, b) {
-	split($0, a, /\|/)
+	split($2, a, /\|/)
 	
 	i = 2
 	j = 1
@@ -67,7 +69,7 @@ function pos_param(pos,  a, b) {
 }
 
 function named_param(key,  a) {
-	if (match($0, key "= ?([^|{}]*)[|{}]", a)) {
+	if (match($2, key "= ?([^|{}]*)[|{}]", a)) {
 		if (debug) print key "=" a[1]
 		return a[1]
 	} else {
@@ -81,6 +83,10 @@ function get_basic_vars() {
 
 	alt1 = named_param("alt1")
 	alt2 = named_param("alt2")
+}
+
+$1 ~ /^-/ {
+	next
 }
 
 /ang-decl-noun-a-n/ {
@@ -390,7 +396,7 @@ function get_basic_vars() {
 	pres_ptc = pos_param(17)
 	past_ptc = pos_param(18)
 
-	conjugate(type, class,
+	conjugate($1, type, class,
 		infinitive, infinitive2, 
 		sg1_pres_indc, sg2_pres_indc, sg3_pres_indc, pl_pres_indc, sg_pres_subj, pl_pres_subj, 
 		sg1_past_indc, sg2_past_indc, sg3_past_indc, pl_past_indc, sg_past_subj, pl_past_subj,

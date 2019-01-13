@@ -54,14 +54,6 @@ for tag in all_features pos person number tense mood voice gender case degree st
 	done
 done
 
-# now extract the lemmas
-echo "lemmas"
-
-> $language.lemmas
-for xmlfile in "${corpus_all_files[@]}" ; do
-	cat $corpus_name/$xmlfile | python $script_dir/../src/python/proiel_lemmas.py >> $language.lemmas
-done
-
 
 num_tokens=`wc $language.pos | awk '{print $2}'`
 echo "${language_name} corpus has ${num_tokens} tokens."

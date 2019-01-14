@@ -1,6 +1,21 @@
 #!/usr/bin/gawk -f
 
+BEGIN {
+	FS = "\t"
+}
+
+function clean_title(word,   a) {
+	if (word ~ /Reconstruction/) {
+		split(word, a, /\//)
+		return a[2]
+	} else {
+		return word
+	}
+}
+
 function decline_noun(word, type, nom_sing, acc_sing, gen_sing, dat_sing, nom_pl, acc_pl, gen_pl, dat_pl) {
+	word = clean_title(word)
+
 	if (no_pos) {
 		printf "%s\t", word
 		} else {
@@ -15,6 +30,8 @@ function decline_adj(word, type, nom_sg_m, acc_sg_m, gen_sg_m, dat_sg_m, ins_sg_
 		nom_pl_m, acc_pl_m, gen_pl_m, dat_pl_m, ins_pl_m,
 		nom_pl_f, acc_pl_f, gen_pl_f, dat_pl_f, ins_pl_f,
 		nom_pl_n, acc_pl_n, gen_pl_n, dat_pl_n, ins_pl_n) {
+	word = clean_title(word)
+
 	if (no_pos) {
 		printf "%s\t", word
 		} else {
@@ -36,6 +53,8 @@ function conjugate(word, type, class,
 		sg1_past_indc, sg2_past_indc, sg3_past_indc, pl_past_indc, sg_past_subj, pl_past_subj,
 		sg_impr, pl_impr,
 		pres_ptc, past_ptc) {
+	word = clean_title(word)
+
 	if (no_pos) {
 		printf "%s\t", word
 		} else {
@@ -49,8 +68,41 @@ function conjugate(word, type, class,
 	printf "\n"
 }
 
+function expand_variants(form,   a) {
+	split(form, a, /, */)
+
+	forms = ""
+	for (i in a) {
+		forms = (forms == "" ? "" : (forms ","))
+
+		if (a[i] ~ /^\(.*\)$/) {
+			form = substr(a[i], 2, length(a[i]) - 2)
+			forms = forms form
+			print "complete variant:" form
+		}
+		else if (a[i] ~ /\((.*)\)/) {
+			form1 = gensub(/\(([^)]+)\)/, "", 1, a[i])
+			form2 = gensub(/\(([^)]+)\)/, "\\1", 1, a[i])
+			forms = forms form1 "," form2
+		} else {
+			forms = forms a[i]
+		}
+	}
+
+	return forms
+}
+
+function remove_markup(x) {
+	x = gensub(/[\[\]]/, "", "g", x)
+	x = gensub(/&lt;!--.*--&gt;/, "", "g" ,x)
+	return expand_variants(x)
+}
+
+
 function pos_param(pos,  a, b) {
-	split($2, a, /\|/)
+	params = gensub(/\{\{l\|ang\|([^}]+)\}\}/, "\\1", "g", $2)
+
+	split(params, a, /\|/)
 	
 	i = 2
 	j = 1
@@ -65,14 +117,15 @@ function pos_param(pos,  a, b) {
 	gsub(/}/, "", b[pos])
 
 	if (debug) print "pos " pos "= " b[pos]
-	return b[pos]
+	return remove_markup(b[pos])
 }
 
 function named_param(key,  a) {
 	if (match($2, key "= ?([^|{}]*)[|{}]", a)) {
 		if (debug) print key "=" a[1]
-		return a[1]
+		return remove_markup(a[1])
 	} else {
+		if (debug) print "cannot find " key
 		return 0
 	}
 }
@@ -438,7 +491,7 @@ $1 ~ /^-/ {
 	pl_impr = pl_pres_indc
 
 	pres_ptc = stem1 "ende"
-	past_ptc = pp_g ? ("(ġe)" pp_g) : pp ?  pp : ("(ġe)" stem4 "en")
+	past_ptc = pp_g ? ("ġe" pp_g "," pp_g) : pp ?  pp : ("ġe" stem4 "en" "," stem4 "en")
 
 	conjugate($1, type, class,
 		infinitive, infinitive2, 
@@ -488,7 +541,7 @@ $1 ~ /^-/ {
 	pl_impr = imp_pl ? imp_pl : pl_pres_indc
 
 	pres_ptc = stem1 "ende"
-	past_ptc = pp_g ? ("(ġe)" pp_g) : pp ?  pp : ("(ġe)" stem1 "ed")
+	past_ptc = pp_g ? ("ġe" pp_g "," pp_g) : pp ?  pp : ("ġe" stem1 "ed" "," stem1 "ed")
 
 	conjugate($1, type, class,
 		infinitive, infinitive2, 
@@ -529,7 +582,7 @@ $1 ~ /^-/ {
 	pl_impr = pl_pres_indc
 
 	pres_ptc = stem "iende" "," stem "iġende"
-	past_ptc = pp_g ? ("(ġe)" pp_g) : pp ?  pp : ("(ġe)" stem "od")
+	past_ptc = pp_g ? ("ġe" pp_g "," pp_g) : pp ?  pp : ("ġe" stem "od" "," stem "od")
 
 	conjugate($1, type, class,
 		infinitive, infinitive2, 

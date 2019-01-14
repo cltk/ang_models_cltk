@@ -27,9 +27,13 @@
 
 /=+Conjugation=+/ {
 	if (in_oe == 1) {
-		getline
-		gsub("</text>", "")
-		print title "\t" $0
+		printf title "\t"
+		do {
+			getline
+			gsub("</text>", "")
+			printf $0
+		} while ($0 !~ /\}\}/)
+		print ""
 	}
 }
 

@@ -78,7 +78,6 @@ function expand_variants(form,   a) {
 		if (a[i] ~ /^\(.*\)$/) {
 			form = substr(a[i], 2, length(a[i]) - 2)
 			forms = forms form
-			print "complete variant:" form
 		}
 		else if (a[i] ~ /\((.*)\)/) {
 			form1 = gensub(/\(([^)]+)\)/, "", 1, a[i])

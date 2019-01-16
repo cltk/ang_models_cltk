@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ "$#" -ne 1 ]; then
-    echo "Usage: make_corpus.bash [corpus name, e.g. oe or latin]"
+    echo "Usage: make_corpus.bash [language name, e.g. oe or latin]"
     exit 1
 fi
 

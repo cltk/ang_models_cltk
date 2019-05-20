@@ -8,24 +8,17 @@ import multiprocessing as mp
 
 
 class LemmatizationRule:
-    def __init__(self, form, lemma):
-        self.form = form 
-        self.lemma = lemma
-
-        self.form_template, self.lemma_template = self.create(form, lemma)
-        self.concreteness = len(self.form_template[1 : len(self.form_template) - 1].replace('([^ ]+)', ''))
-        self.form_template = re.compile(self.form_template)
+    def __init__(self, form_template, lemma_template):
+        self.lemma_template = lemma_template
+        self.concreteness = len(form_template[1 : len(form_template) - 1].replace('([^ ]+)', ''))
+        self.form_template = re.compile(form_template)
 
     def apply(self, form):
         form = form.lower()
-        return self.form_template.sub(self.lemma_template, form)
+        return re.sub(self.form_template, self.lemma_template, form)
 
     def match(self, form):
-        #return len(form) - self.concreteness if self.form_template.match(form) else 0
-        if self.form_template.match(form):
-            return self.concreteness
-        else:
-            return 0
+        return len(form) - self.concreteness if self.form_template.match(form.lower()) else 0
 
     def __call__(self, form):
         return self.apply(form)
@@ -56,13 +49,7 @@ class LemmatizationRule:
             dx += match.size - 7
             dy += match.size - 2
 
-        return '^' + w1 + '$', w2
-
-    #def mutate(sef, mutation):
-        #if mutation == 'abstract':
-        #elif mutation == 'concrete':
-        #else:
-        #    raise Something.
+        return LemmatizationRule('^' + w1 + '$', w2)
 
 
 class Lemmatizer:
@@ -79,7 +66,7 @@ class Lemmatizer:
                 w = line.split()
                 if len(w) == 2:
                     form, lemma = line.split()
-                    self.rules.append(LemmatizationRule(form, lemma))
+                    self.rules.append(LemmatizationRule.create(form, lemma))
                     lemmas = self.dictionary.get(form, [])
                     lemmas.append(lemma)
                     self.dictionary[form] = lemmas
@@ -103,29 +90,15 @@ class Lemmatizer:
     def lemmatize(self, form, tolerance = 1):
         form = form.lower()
 
-        #score the rules
-        rule_scores = []
-        best_score = 0
-        for rule in self.rules:
-            score = len(form) - rule.concreteness if rule.form_template.match(form) else 0
-            if score > 0:
-                rule_scores.append((rule, score))
-                if score > best_score:
-                    best_score = score
-       
-        # compute the lemmas
-        lemmas = []
-        for rule, score in rule_scores:
-            if score <= best_score + tolerance:
-                lemmas.append(rule(form))
-        lemmas = list(set(lemmas))
+        rule_scores = [(rule, rule.match(form)) for rule in self.rules]
+        best_scores = [x[1] for x in rule_scores if x[1] > 0]
+        best_score = min(best_scores)
 
-        # heuristics for final selection
-        non_zero_freqs = []
-        for lemma in lemmas:
-            freq = self.relative_frequency(lemma)
-            if freq != 0:
-                non_zero_freqs.append((lemma, freq))
+        candidates =  filter(lambda x: x[1] > 0 and x[1] <= best_score + tolerance, rule_scores)
+
+        lemmas = list(set([x[0](form) for x in candidates]))
+        attested_freqs = [(lemma, self.relative_frequency(lemma)) for lemma in lemmas]
+        non_zero_freqs = [(lemma, freq) for (lemma, freq) in attested_freqs if freq != 0]
         if len(non_zero_freqs) > 0:
             sorted_freqs = sorted(non_zero_freqs, key = lambda x: x[1], reverse=True)
             return [sorted_freqs[0][0]]
@@ -153,10 +126,26 @@ class Lemmatizer:
 
         pool = mp.Pool()
         scores = pool.map(self._evaluate_form, list(self.dictionary.keys()))
-       
+
         print('eval time: ', time.time() - start_time)
 
         return scores
+
+    def _evaluate_match_form(self, form):
+        rule_scores = [(rule, rule.match(form)) for rule in self.rules]
+        return 1
+
+
+    def evaluate_matching(self):
+        start_time = time.time()
+
+        #pool = mp.Pool()
+        #scores = pool.map(self._evaluate_match_form, list(self.dictionary.keys()))
+        scores = [self._evaluate_match_form(form) for form in self.dictionary.keys()]
+        print('eval time: ', time.time() - start_time)
+
+        return scores
+
             
 
     

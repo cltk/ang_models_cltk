@@ -16,7 +16,7 @@ cat texts/oe/beowulf.txt >> ./texts/oe/oe_all.txt
 awk '{gsub(/\/[^ ]+/,""); print }' corpora/oe/oe.all_features >> ./texts/oe/oe_all.txt
 
 # build table of token counts per type
-awk '{gsub(/[.,;?!]/, ""); gsub(/ /, "\n");print tolower($0)}' texts/oe/oe_all.txt |sort|uniq -c > data/ang_unigrams.txt
+awk '{gsub(/[.,;?!]/, ""); gsub(/\s/, "\n");print tolower($0)}' texts/oe/oe_all.txt |sort|uniq -c > data/ang_unigrams.txt
 
 num_tokens=`wc texts/oe/oe_all.txt | awk '{print $2}'`
 num_types=`wc -l data/oe.counts | awk '{print $1}'`
